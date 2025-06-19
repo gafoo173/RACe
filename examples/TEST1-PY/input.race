@@ -1,0 +1,45 @@
+print("Hello from RACe Compiler to Python!");
+
+int num_int = 10;
+float num_float = 3.14;
+logic is_active = true;
+
+print("Integer: ");
+print(num_int);
+print("Float: ");
+print(num_float);
+print("Boolean: ");
+print(is_active);
+
+print("Sum of int and float: ");
+print(num_int + num_float);
+
+logic compare_result = num_int > num_float;
+print("Is int > float? ");
+print(compare_result);
+
+if (is_active) {
+    print("Program is active.");
+} else {
+    print("Program is inactive.");
+}
+
+int counter = 0;
+while (counter < 3) {
+    print("Loop: ");
+    print(counter);
+    counter = counter + 1;
+}
+
+// Function definition
+func calculate(a, b, c) {
+    float result = (a * b) + c;
+    print("Result inside function: ");
+    print(result);
+    return result;
+}
+
+// Function call
+float final_value = calculate(num_int, num_float, 5.5);
+print("Final result from function call: ");
+print(final_value);
