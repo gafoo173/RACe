@@ -1,0 +1,58 @@
+print("--- Advanced RACe Features ---");
+
+// Test float type and operations
+float pi = 3.14159;
+float radius = 5.0;
+float area = pi * radius * radius;
+print("Area of circle with radius ");
+print(radius);
+print(" is: ");
+print(area); // Should print 78.539750
+
+// Test boolean type and comparison
+logic is_raining = true;
+logic is_sunny = false;
+print("Is it raining? ");
+print(is_raining); // Should print true
+print("Is it sunny? ");
+print(is_sunny); // Should print false
+
+if (is_raining == true) {
+    print("Better take an umbrella!");
+} else {
+    print("Enjoy the clear sky!");
+}
+
+int temp = 25;
+if (temp > 30) {
+    print("It's hot!");
+} else if (temp < 10) {
+    print("It's cold!");
+} else {
+    print("Temperature is moderate.");
+}
+
+// Test while loop with float and logic
+float countdown = 3.5;
+while (countdown > 0.0) {
+    print("Countdown: ");
+    print(countdown);
+    countdown = countdown - 1.0;
+}
+print("Liftoff!");
+
+// Function declaration and call (TODO: CallExpression not implemented yet)
+// For now, this func will be compiled, but cannot be directly called from RACe.
+// You'll need to manually call it from the generated C main for testing.
+func calculateSum(x, y) {
+    int s = x + y;
+    print("Sum inside function: ");
+    print(s);
+    return s;
+}
+
+// Example of how you would call it *in the generated C code*:
+// RACeValue my_sum_result = calculateSum(race_create_int(10), race_create_int(20));
+// race_print(my_sum_result);
+
+print("--- End of RACe Program ---");
