@@ -117,15 +117,18 @@ jobs:
       - name: سحب كود المستودع
         uses: actions/checkout@v4
 
-      # تثبيت MinGW-w64 (i686-w64-mingw32 for 32-bit)
+      # تثبيت MinGW-w64 (i686-w64-mingw32 for 32-bit) باستخدام Chocolatey
       - name: تثبيت MinGW-w64 لـ 32-bit
-        uses: egor-tensin/setup-mingw-w64-gcc@v1 # استخدام Action مخصص
-        with:
-          version: latest # استخدم أحدث إصدار
-          platform: i686 # تحديد منصة 32-بت (i686)
+        run: |
+          # تثبيت toolchain لـ i686 (32-bit)
+          choco install mingw --params "/Architecture:i686 /Threads:posix /Exception:seh" -y
+          # إضافة MinGW إلى PATH
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw32\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: powershell # استخدام PowerShell للأوامر الخاصة بـ Windows
 
       - name: بناء مترجم RACe إلى C (race_c_compiler_x86.exe)
         # الآن نستخدم g++ من البيئة المثبتة حديثاً
+        # لا نحتاج إلى -m32 لأن المسار سيشير إلى مترجم 32-بت
         run: g++ -std=c++17 -Wall -Wextra -o race_c_compiler_x86.exe race_compiler.cpp
 
       - name: بناء مترجم RACe إلى Java (race_java_compiler_x86.exe)
