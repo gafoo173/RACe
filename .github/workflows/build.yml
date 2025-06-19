@@ -117,13 +117,19 @@ jobs:
       - name: سحب كود المستودع
         uses: actions/checkout@v4
 
+      # تثبيت MinGW-w64 (i686-w64-mingw32 for 32-bit)
+      - name: تثبيت MinGW-w64 لـ 32-bit
+        uses: egor-tensin/setup-mingw-w64-gcc@v1 # استخدام Action مخصص
+        with:
+          version: latest # استخدم أحدث إصدار
+          platform: i686 # تحديد منصة 32-بت (i686)
+
       - name: بناء مترجم RACe إلى C (race_c_compiler_x86.exe)
-        # لتوليد 32-bit على Windows باستخدام MinGW-w64 (الذي غالبًا ما يكون موجودًا على runners)
-        # نستخدم -m32. قد تختلف التوافر الدقيق للمترجمات على runners بين الإصدارات.
-        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_c_compiler_x86.exe race_compiler.cpp
+        # الآن نستخدم g++ من البيئة المثبتة حديثاً
+        run: g++ -std=c++17 -Wall -Wextra -o race_c_compiler_x86.exe race_compiler.cpp
 
       - name: بناء مترجم RACe إلى Java (race_java_compiler_x86.exe)
-        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_java_compiler_x86.exe race_compiler_java.cpp
+        run: g++ -std=c++17 -Wall -Wextra -o race_java_compiler_x86.exe race_compiler_java.cpp
 
       - name: رفع الملفات التنفيذية لنظام Windows (x86)
         uses: actions/upload-artifact@v4
