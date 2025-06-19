@@ -1,0 +1,134 @@
+# اسم سير العمل
+name: بناء مترجمات RACe (C++ إلى C/Java)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# تعريف المهام التي سيتم تشغيلها
+jobs:
+  # مهمة البناء لنظام Linux (64-bit)
+  build-linux-x64:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: سحب كود المستودع
+        uses: actions/checkout@v4
+
+      - name: تثبيت G++
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      - name: بناء مترجم RACe إلى C (race_c_compiler)
+        run: g++ -std=c++17 -Wall -Wextra -o race_c_compiler race_compiler.cpp
+
+      - name: بناء مترجم RACe إلى Java (race_java_compiler)
+        run: g++ -std=c++17 -Wall -Wextra -o race_java_compiler race_compiler_java.cpp
+
+      - name: رفع الملفات التنفيذية لنظام Linux (x64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: race-compilers-linux-x64
+          path: |
+            race_c_compiler
+            race_java_compiler
+
+  # مهمة البناء لنظام Linux (32-bit)
+  build-linux-x86:
+    runs-on: ubuntu-latest # يمكننا استخدام نفس الـ runner مع تثبيت 32-bit libs
+
+    steps:
+      - name: سحب كود المستودع
+        uses: actions/checkout@v4
+
+      - name: تثبيت G++ مع دعم 32-bit
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-multilib
+
+      - name: بناء مترجم RACe إلى C (race_c_compiler_x86)
+        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_c_compiler_x86 race_compiler.cpp
+
+      - name: بناء مترجم RACe إلى Java (race_java_compiler_x86)
+        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_java_compiler_x86 race_compiler_java.cpp
+
+      - name: رفع الملفات التنفيذية لنظام Linux (x86)
+        uses: actions/upload-artifact@v4
+        with:
+          name: race-compilers-linux-x86
+          path: |
+            race_c_compiler_x86
+            race_java_compiler_x86
+
+  # مهمة البناء لنظام macOS (64-bit)
+  build-macos-x64:
+    runs-on: macos-latest
+
+    steps:
+      - name: سحب كود المستودع
+        uses: actions/checkout@v4
+
+      - name: بناء مترجم RACe إلى C (race_c_compiler)
+        run: g++ -std=c++17 -Wall -Wextra -o race_c_compiler race_compiler.cpp
+
+      - name: بناء مترجم RACe إلى Java (race_java_compiler)
+        run: g++ -std=c++17 -Wall -Wextra -o race_java_compiler race_compiler_java.cpp
+
+      - name: رفع الملفات التنفيذية لنظام macOS (x64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: race-compilers-macos-x64
+          path: |
+            race_c_compiler
+            race_java_compiler
+
+  # مهمة البناء لنظام Windows (64-bit)
+  build-windows-x64:
+    runs-on: windows-latest
+
+    steps:
+      - name: سحب كود المستودع
+        uses: actions/checkout@v4
+
+      - name: بناء مترجم RACe إلى C (race_c_compiler.exe)
+        run: g++ -std=c++17 -Wall -Wextra -o race_c_compiler.exe race_compiler.cpp
+
+      - name: بناء مترجم RACe إلى Java (race_java_compiler.exe)
+        run: g++ -std=c++17 -Wall -Wextra -o race_java_compiler.exe race_compiler_java.cpp
+
+      - name: رفع الملفات التنفيذية لنظام Windows (x64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: race-compilers-windows-x64
+          path: |
+            race_c_compiler.exe
+            race_java_compiler.exe
+
+  # مهمة البناء لنظام Windows (32-bit)
+  build-windows-x86:
+    runs-on: windows-latest
+
+    steps:
+      - name: سحب كود المستودع
+        uses: actions/checkout@v4
+
+      - name: بناء مترجم RACe إلى C (race_c_compiler_x86.exe)
+        # لتوليد 32-bit على Windows باستخدام MinGW-w64 (الذي غالبًا ما يكون موجودًا على runners)
+        # نستخدم -m32. قد تختلف التوافر الدقيق للمترجمات على runners بين الإصدارات.
+        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_c_compiler_x86.exe race_compiler.cpp
+
+      - name: بناء مترجم RACe إلى Java (race_java_compiler_x86.exe)
+        run: g++ -std=c++17 -Wall -Wextra -m32 -o race_java_compiler_x86.exe race_compiler_java.cpp
+
+      - name: رفع الملفات التنفيذية لنظام Windows (x86)
+        uses: actions/upload-artifact@v4
+        with:
+          name: race-compilers-windows-x86
+          path: |
+            race_c_compiler_x86.exe
+            race_java_compiler_x86.exe
